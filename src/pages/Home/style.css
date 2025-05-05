@@ -3,7 +3,28 @@
     padding: 0;
     box-sizing: border-box;
   }
-  
+
+  header {
+    background-color: #f2a900;
+    color: #000;
+    text-align: center;
+    padding: 20px;
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+
+  input[type="text"] {
+  background-color: #fff3d1;
+  color: #000;
+  border: none;
+  padding: 15px 30px;
+  border-radius: 8px;
+  font-size: 1.5rem;
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 20px;
+  }
+    
   body {
     height: 100vh;
     display: flex;
