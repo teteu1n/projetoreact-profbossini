@@ -1,18 +1,40 @@
-require('dotenv').config()
-const express = require ('express')
-const { GoogleGenAI } = require ('@google/genai')
-const app = express()
-app.use(express.json())
+require('dotenv').config();
+const express = require('express');
+const { GoogleGenerativeAI } = require('@google/generative-ai');
 
-, async (req, res) => {
-  const ai = 
-    new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-  const prompt = req.body.prompt
-  const response = await ai.models.generateContent({
-    model: "gemini-2.0-flash",
-    contents: prompt,
-  });
-  res.json({"resposta": response.text})
-}
+const app = express();
+const port = 3000;
 
-app.listen(3000, () => console.log("Hello World"))
+app.use(express.json());
+
+const ai = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+
+// Endpoint GET para testar no navegador
+app.get('/', (req, res) => {
+  res.send('Servidor está rodando!');
+});
+
+// Endpoint POST que usa a Gemini AI
+app.post('/gemini', async (req, res) => {
+  try {
+    const prompt = req.body.prompt;
+    if (!prompt) {
+      return res.status(400).json({ erro: 'Prompt é obrigatório.' });
+    }
+
+    const model = ai.getGenerativeModel({ model: 'gemini-1.5-flash' });
+
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    const text = response.text();
+
+    res.json({ resposta: text });
+  } catch (error) {
+    console.error('Erro ao gerar conteúdo com Gemini:', error);
+    res.status(500).json({ erro: 'Erro interno ao gerar resposta com Gemini.' });
+  }
+});
+
+app.listen(port, () => {
+  console.log(`Servidor rodando em http://localhost:${port}`);
+});
